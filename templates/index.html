@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriPal - Plant Disease Detection</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: rgb(192, 244, 192);
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 128, 0, 0.8);
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+        }
+        .main-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+        }
+        .content-container {
+            flex: 1;
+            margin-right: 20px;
+        }
+        .content-container h4 {
+            color: #004d00;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        .image-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .image-container img {
+            width: 250px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .form-container {
+            flex: 1;
+            max-width: 600px;
+            padding: 20px;
+            background: rgba(0, 128, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .form-container h1 {
+            text-align: center;
+            color: #fff;
+        }
+        .form-container label {
+            font-weight: bold;
+            color: #fff;
+        }
+        .form-container input[type="file"],
+        .form-container input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #228B22;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #1e7c1e;
+        }
+        .chat-container {
+            flex: 1;
+            max-width: 400px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 70%;
+        }
+        .user {
+            align-self: flex-end;
+            background-color: #228B22;
+            color: white;
+        }
+        .bot {
+            align-self: flex-start;
+            background-color: #e9ecef;
+        }
+        .input-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .input-area select,
+        .input-area input[type="text"],
+        .input-area button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+        .input-area input[type="text"] {
+            flex: 1;
+        }
+        .input-area button {
+            background-color: #228B22;
+            color: white;
+            cursor: pointer;
+        }
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(0, 128, 0, 0.8);
+            color: white;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+        .footer a {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <!-- Google Translate Script -->
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">Agri Pal</div>
+
+    <!-- Google Translate Widget -->
+    <div id="google_translate_element" style="position: absolute; top: 20px; right: 20px;"></div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="content-container">
+            <h3>
+                Welcome to AgriPal – Your Trusted Guide to Thriving Plants!
+                <br>
+                Our interactive platform is your all-in-one solution for maintaining healthy, flourishing plants. Whether you're a gardening enthusiast, a professional, or a farmer, AgriPal is here to assist you in:
+                <ul>
+                    <li>Quickly detecting plant diseases with ease.</li>
+                    <li>Understanding plant diseases and their impact.</li>
+                    <li>Learning effective ways to reduce damage and explore treatment options.</li>
+                    <li>Getting information on recommended pesticides, including proper usage quantities.</li>
+                </ul>
+                Plus, our friendly chatbot is ready to answer your plant-related questions! From addressing common plant issues to sharing tips for nurturing vibrant greenery, AgriPal has you covered. Let’s grow together!
+            </h3>
+            <div class="image-container">
+                <img src="{{ url_for('static', filename='images/imgs1.jpg') }}" alt="A healthy green plant">
+                <img src="{{ url_for('static', filename='images/imgs2.jpg') }}" alt="A healthy green plant">
+            </div>
+        </div>
+
+        <!-- Form to Upload Image and Location -->
+        <div class="form-container">
+            <h1>Plant Disease Detection</h1>
+            <form action="/predict" method="POST" enctype="multipart/form-data">
+                <label for="image">Upload an Image:</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+                <label for="location">Enter Location:</label>
+                <input type="text" id="location" name="location" placeholder="e.g., Farm 1, City" required>
+                <button type="submit">Predict</button>
+            </form>
+        </div>
+
+        <!-- Chatbot Interface -->
+        <div class="chat-container">
+            <div class="messages" id="messages"></div>
+            <div class="input-area">
+                <select id="suggestedQuestions" onchange="sendSelectedMessage()">
+                    <option value="">-- Select a question --</option>
+                    <option value="What are the common symptoms of plant diseases?">What are the common symptoms of plant diseases?</option>
+                    <option value="Is there a tool to identify plant diseases?">Is there a tool to identify plant diseases?</option>
+                    <option value="Does the system detect all plant diseases?">Does the system detect all plant diseases?</option>
+                    <option value="How can I prevent plant diseases?">How can I prevent plant diseases?</option>
+                    <option value="What are the best practices for plant health?">What are the best practices for plant health?</option>
+                </select>
+                <input type="text" id="customMessage" placeholder="Type your question here...">
+                <button onclick="sendCustomMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © 2025 AgriPal. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+    </div>
+
+    <script type="text/javascript">
+        // Google Translate Initialization
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+
+        // Handle message appending for chatbot
+        const messagesDiv = document.getElementById('messages');
+
+        function appendMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${sender}`;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Handle sending selected message
+        async function sendSelectedMessage() {
+            const dropdown = document.getElementById('suggestedQuestions');
+            const message = dropdown.value;
+            if (!message) return;
+
+            appendMessage(message, 'user');
+            dropdown.selectedIndex = 0; // Reset dropdown
+
+            await fetchBotReply(message);
+        }
+
+        // Handle sending custom message
+        async function sendCustomMessage() {
+            const input = document.getElementById('customMessage');
+            const message = input.value.trim();
+            if (!message) return;
+
+            appendMessage(message, 'user');
+            input.value = ''; // Clear input field
+
+            await fetchBotReply(message);
+        }
+
+        // Fetch bot's response
+        async function fetchBotReply(message) {
+            try {
+                appendMessage('Loading...', 'bot');
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message }),
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch response from bot.');
+                const data = await response.json();
+                appendMessage(data.reply, 'bot');
+            } catch (error) {
+                appendMessage('Sorry, something went wrong. Please try again.', 'bot');
+            }
+        }
+    </script>
+</body>
+</html>
